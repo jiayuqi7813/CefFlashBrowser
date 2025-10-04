@@ -27,7 +27,8 @@ namespace CefFlashBrowser
         [STAThread]
         private static void Main(string[] args)
         {
-            Win32.SetDllDirectory(GlobalData.CefDllPath);
+            // Only set DLL directory on Windows
+            Win32.SetDllDirectorySafe(GlobalData.CefDllPath);
             AppDomain.CurrentDomain.AssemblyResolve += ResolveCefSharpAssembly;
 
             try
@@ -106,7 +107,11 @@ namespace CefFlashBrowser
 
         private static void InitCefFlash()
         {
-            Environment.SetEnvironmentVariable("ComSpec", GlobalData.EmptyExePath); //Remove black popup window
+            // Platform-specific initialization
+            if (PlatformHelper.IsWindows)
+            {
+                Environment.SetEnvironmentVariable("ComSpec", GlobalData.EmptyExePath); //Remove black popup window
+            }
 
             var settings = new CefFlashSettings()
             {
@@ -118,13 +123,31 @@ namespace CefFlashBrowser
                 BrowserSubprocessPath = GlobalData.SubprocessPath
             };
 
+            // Log platform information
+            LogHelper.LogInfo($"Platform: {PlatformHelper.GetPlatformDescription()}");
+            var flashWarning = PlatformInitializer.GetFlashSupportWarning();
+            if (!string.IsNullOrEmpty(flashWarning))
+            {
+                LogHelper.LogInfo(flashWarning);
+            }
+
             if (GlobalData.Settings.FakeFlashVersionSetting.Enable)
             {
                 settings.PpapiFlashVersion = GlobalData.Settings.FakeFlashVersionSetting.FlashVersion;
             }
             else
             {
-                settings.PpapiFlashVersion = FileVersionInfo.GetVersionInfo(GlobalData.FlashPath).FileVersion.Replace(',', '.');
+                // FileVersionInfo may not work on non-Windows platforms
+                if (PlatformHelper.IsWindows && File.Exists(GlobalData.FlashPath))
+                {
+                    settings.PpapiFlashVersion = FileVersionInfo.GetVersionInfo(GlobalData.FlashPath).FileVersion.Replace(',', '.');
+                }
+                else
+                {
+                    // Use a default version for non-Windows or when file doesn't exist
+                    settings.PpapiFlashVersion = "32.0.0.465"; // Last known Flash version
+                    LogHelper.LogInfo($"Using default Flash version: {settings.PpapiFlashVersion}");
+                }
             }
 
             if (GlobalData.Settings.UserAgentSetting.EnableCustom)
