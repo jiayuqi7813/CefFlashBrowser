@@ -117,6 +117,19 @@ dotnet build -c Release -r osx-arm64
 
 ### CEF (Chromium Embedded Framework) for macOS
 
+**Important Note on CefSharp Version**: The current version (84.4.10) does not support ARM64 platform. To enable ARM64 builds:
+
+1. **Option A - Update CefSharp** (Recommended for actual Mac deployment):
+   - Upgrade to CefSharp 100+ which has ARM64 support
+   - Update package references in `.csproj` files:
+     ```xml
+     <PackageReference Include="CefSharp.WinForms" Version="126.2.180" />
+     ```
+
+2. **Option B - Use x64 with Rosetta 2** (Quick test):
+   - Build for x64 instead of ARM64
+   - Run on Mac ARM via Rosetta 2 emulation
+
 CEF binaries for macOS ARM64:
 
 1. Download from [CEF Builds](https://cef-builds.spotifycdn.com/index.html)
@@ -137,8 +150,9 @@ The code now includes platform detection that:
 
 1. **WPF Dependency**: Main blocker for macOS support
 2. **C++/CLI Projects**: Need replacement with native code
-3. **Flash Availability**: No native ARM64 Flash Player
-4. **User32/Kernel32 APIs**: Many Windows-specific calls throughout codebase
+3. **CefSharp 84.4.10**: Does not support ARM64 platform (upgrade to 100+ required)
+4. **Flash Availability**: No native ARM64 Flash Player
+5. **User32/Kernel32 APIs**: Many Windows-specific calls throughout codebase
 
 ### Testing on macOS ARM
 
