@@ -4,6 +4,10 @@ using System.Text;
 
 namespace CefFlashBrowser.Utils
 {
+    /// <summary>
+    /// Windows-specific P/Invoke declarations and helpers
+    /// Only available on Windows platform
+    /// </summary>
     public static class Win32
     {
         // window messages
@@ -47,6 +51,18 @@ namespace CefFlashBrowser.Utils
 
         [DllImport("kernel32.dll")]
         public static extern bool SetDllDirectory(string lpPathName);
+
+        /// <summary>
+        /// Platform-safe wrapper for SetDllDirectory
+        /// Returns true on non-Windows platforms (no-op)
+        /// </summary>
+        public static bool SetDllDirectorySafe(string lpPathName)
+        {
+            if (!PlatformHelper.IsWindows)
+                return true; // No-op on non-Windows platforms
+            
+            return SetDllDirectory(lpPathName);
+        }
 
         [DllImport("user32.dll")]
         public static extern IntPtr GetWindowLong(IntPtr hWnd, int nIndex);

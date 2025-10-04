@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net462</TargetFramework>
-    <Platforms>x86;x64</Platforms>
+    <Platforms>x86;x64;ARM64</Platforms>
     <UseWPF>true</UseWPF>
     <StartupObject>CefFlashBrowser.EmptyExe.Program</StartupObject>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
@@ -16,6 +16,11 @@
 
   <PropertyGroup Condition="'$(Platform)' == 'x64'">
     <OutputPath>..\bin\$(Platform)\$(Configuration)\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Platform)' == 'ARM64'">
+    <OutputPath>..\bin\$(Platform)\$(Configuration)\</OutputPath>
+    <PlatformTarget>ARM64</PlatformTarget>
   </PropertyGroup>
 
 </Project>
