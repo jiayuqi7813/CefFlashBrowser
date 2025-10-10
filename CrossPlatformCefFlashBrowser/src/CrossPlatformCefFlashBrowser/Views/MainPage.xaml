@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="CrossPlatformCefFlashBrowser.Views.MainPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:CrossPlatformCefFlashBrowser.ViewModels"
+             x:DataType="viewModels:MainViewModel"
+             Title="CefFlashBrowser">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style TargetType="Button">
+                <Setter Property="Margin" Value="4" />
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <Grid RowDefinitions="Auto,*" ColumnDefinitions="*">
+        <Grid Grid.Row="0" ColumnDefinitions="Auto,Auto,Auto,*,Auto" Padding="8" ColumnSpacing="6">
+            <Button Grid.Column="0"
+                    Text="⟨"
+                    Command="{Binding GoBackCommand}"
+                    IsEnabled="{Binding CanGoBack}" />
+            <Button Grid.Column="1"
+                    Text="⟩"
+                    Command="{Binding GoForwardCommand}"
+                    IsEnabled="{Binding CanGoForward}" />
+            <Button Grid.Column="2"
+                    Text="⟳"
+                    Command="{Binding RefreshCommand}" />
+            <Entry Grid.Column="3"
+                   Text="{Binding Address}" Placeholder="输入或粘贴网址" />
+            <Button Grid.Column="4"
+                    Text="转到"
+                    Command="{Binding NavigateCommand}" />
+        </Grid>
+        <Grid Grid.Row="1">
+            <WebView Source="{Binding BrowserSource}" />
+        </Grid>
+    </Grid>
+</ContentPage>
