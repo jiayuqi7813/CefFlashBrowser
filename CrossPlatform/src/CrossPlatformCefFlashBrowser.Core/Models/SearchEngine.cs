@@ -1,0 +1,15 @@
+namespace CrossPlatformCefFlashBrowser.Core.Models
+{
+    public enum SearchEngine
+    {
+        Baidu,
+        Google,
+        Bing,
+        Sogou,
+        So360,
+        DuckDuckGo,
+        Yandex,
+        Bilibili,
+        Game4399
+    }
+}
